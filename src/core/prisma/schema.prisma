@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String            @id @default(cuid())
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  firstName String
+  lastName  String
+  birthday  DateTime
+  ni        String
+  email     String
+  phone     String
+  learnerId String
+  jobCards  UserJobCards[]
+  profile   UserProfile?
+  photo     UserProfilePhoto?
+}
+
+model UserJobCards {
+  id        String              @id @default(cuid())
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  user      User                @relation(fields: [userId], references: [id])
+  userId    String
+  name      String
+  requests  RequestedJobCards[]
+}
+
+model UserProfile {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  address1  String
+  address2  String
+  address3  String
+  county    String
+  postcode  String
+}
+
+model UserProfilePhoto {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  url       String
+}
+
+model RequestedJobCards {
+  id        String       @id @default(cuid())
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  jobCard   UserJobCards @relation(fields: [jobCardId], references: [id])
+  jobCardId String
+}
