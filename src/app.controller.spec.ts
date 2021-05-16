@@ -58,9 +58,7 @@ describe('AppController', () => {
           useValue: {
             getRandomUser: jest.fn().mockReturnValue(mockUser),
             addUserAddress: jest.fn().mockReturnValue(mockUserProfile),
-            updateUserProfilePhoto: jest
-              .fn()
-              .mockRejectedValue(mockUserProfilePhoto),
+            updateUserProfilePhoto: jest.fn().mockRejectedValue(mockUserProfilePhoto),
             uploadFile: jest.fn(),
             downloadFile: jest.fn(),
             requestJobCard: jest.fn().mockReturnValue(mockRequestJobCard),

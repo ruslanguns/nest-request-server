@@ -27,16 +27,7 @@ interface User {
 async function main() {
   const result = Promise.all(
     data.map(
-      async ({
-        firstName,
-        lastName,
-        birthday,
-        jobCards,
-        learnerId,
-        phone,
-        ni,
-        email,
-      }: User) =>
+      async ({ firstName, lastName, birthday, jobCards, learnerId, phone, ni, email }: User) =>
         await prisma.user.create({
           data: {
             firstName,

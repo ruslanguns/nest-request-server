@@ -1,9 +1,4 @@
-import {
-  RequestedJobCard,
-  User,
-  UserProfile,
-  UserProfilePhoto,
-} from '.prisma/client';
+import { RequestedJobCard, User, UserProfile, UserProfilePhoto } from '.prisma/client';
 import {
   BadGatewayException,
   BadRequestException,
@@ -14,13 +9,7 @@ import {
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Storage } from '@squareboat/nest-storage';
 import { Response } from 'express';
-import {
-  createWriteStream,
-  existsSync,
-  mkdirSync,
-  rmdirSync,
-  WriteStream,
-} from 'fs';
+import { createWriteStream, existsSync, mkdirSync, rmdirSync, WriteStream } from 'fs';
 import got from 'got';
 import { extname, join } from 'path';
 import { PrismaService } from './core/prisma/prisma.service';
@@ -47,10 +36,7 @@ export class AppService {
     });
   }
 
-  async addUserAddress({
-    userId,
-    ...dto
-  }: CreateUserAddressDTO): Promise<UserProfile> {
+  async addUserAddress({ userId, ...dto }: CreateUserAddressDTO): Promise<UserProfile> {
     const user = await this.data.user.findUnique({
       where: { id: userId },
       include: { profile: true },
@@ -101,15 +87,9 @@ export class AppService {
         .fill(null)
         .map(() => Math.round(Math.random() * 16).toString(16))
         .join('');
-      return Storage.disk('docs').put(
-        `${randomName}${extname(file.originalname)}`,
-        file.buffer,
-      );
+      return Storage.disk('docs').put(`${randomName}${extname(file.originalname)}`, file.buffer);
     } catch (err) {
-      throw new BadGatewayException(
-        'There are errors with the file server',
-        err,
-      );
+      throw new BadGatewayException('There are errors with the file server', err);
     }
   }
 
