@@ -61,6 +61,10 @@ export class AppService {
     userId: string,
     photo: Express.Multer.File,
   ): Promise<UserProfilePhoto> {
+    if (!photo) {
+      throw new BadRequestException('file should not be empty');
+    }
+
     const user = await this.data.user.findUnique({
       where: { id: userId },
       include: { photo: true },
