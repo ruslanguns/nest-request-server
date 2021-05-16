@@ -27,13 +27,13 @@ model User {
 }
 
 model UserJobCards {
-  id        String              @id @default(cuid())
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-  user      User                @relation(fields: [userId], references: [id])
+  id        String             @id @default(cuid())
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  user      User               @relation(fields: [userId], references: [id])
   userId    String
   name      String
-  requests  RequestedJobCards[]
+  requests  RequestedJobCard[]
 }
 
 model UserProfile {
@@ -58,7 +58,7 @@ model UserProfilePhoto {
   url       String
 }
 
-model RequestedJobCards {
+model RequestedJobCard {
   id        String       @id @default(cuid())
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt

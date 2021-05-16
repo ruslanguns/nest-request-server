@@ -31,6 +31,8 @@
     "@nestjs/schedule": "^0.4.3",
     "@prisma/client": "^2.22.1",
     "@squareboat/nest-storage": "^0.0.3",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "got": "^11.8.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

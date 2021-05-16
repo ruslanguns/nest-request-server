@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -12,6 +13,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { AppService } from './app.service';
 import { IMAGE_FILE_OPTIONS } from './config/constants';
+import { CreateUserAddressDTO } from './dto/create-user-address.dto';
+import { RequestJobCardDTO } from './dto/request-new-card.dto';
 
 @Controller()
 export class AppController {
@@ -19,12 +22,21 @@ export class AppController {
 
   @Get('user/random')
   async getRandomUser() {
-    return this.appService.getRandomUser();
+    return await this.appService.getRandomUser();
   }
 
   @Put('user/address')
-  async updateUserAddress() {
-    return; // TODO: Método sin implementar
+  async updateUserAddress(@Body() dto: CreateUserAddressDTO) {
+    return await this.appService.addUserAddress(dto);
+  }
+
+  @Put('user/profile-photo/:userId')
+  @UseInterceptors(FileInterceptor('file', IMAGE_FILE_OPTIONS))
+  async updateUserProfilePhoto(
+    @Param('userId') userId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return await this.appService.updateUserProfilePhoto(userId, file);
   }
 
   @Post('file/upload')
@@ -39,12 +51,12 @@ export class AppController {
   }
 
   @Post('request/job-card')
-  async newRequest() {
-    return; // TODO: Método sin implementar
+  async newRequest(@Body() dto: RequestJobCardDTO) {
+    return await this.appService.requestJobCard(dto);
   }
 
   @Get('request/job-card')
   async getRequests() {
-    return; // TODO: Método sin implementar
+    return await this.appService.getRequestedJobCards();
   }
 }
