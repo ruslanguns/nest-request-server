@@ -3,6 +3,18 @@
 
 This server is made using [Nest](https://github.com/nestjs/nest) framework with TypeScript language.
 
+## Available API endpoints
+
+| No. 	| Method 	| Description 	                  | Endpoint    	           |
+|-----	|--------	|---------------------------------|------------------------  |
+|   1 	|   GET  	| Get a user randomly             | /user/random             |
+|   2  	|   PUT 	| Update/Create user address      | /user/address            |
+|   3  	|   PUT  	| Update/Create user photo        | /user/photo/{:userId}    |
+|   4  	|   GET  	| Get list of requested job cards | /request/job-card        |
+|   5  	|   POST	| Request a Job Card              | /request/job-card        |
+|   6  	|   POST 	| Upload a file into AWS          | /file/upload             |
+|   7  	|   GET 	| Download a file from AWS        | /file/download/:fileName |
+
 ## Installation
 
 ```bash

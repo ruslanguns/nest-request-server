@@ -30,7 +30,7 @@ export class AppController {
     return await this.appService.addUserAddress(dto);
   }
 
-  @Put('user/profile-photo/:userId')
+  @Put('user/photo/:userId')
   @UseInterceptors(FileInterceptor('file', IMAGE_FILE_OPTIONS))
   async updateUserProfilePhoto(
     @Param('userId') userId: string,
