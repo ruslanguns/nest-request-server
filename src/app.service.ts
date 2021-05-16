@@ -6,6 +6,7 @@ import {
 } from '.prisma/client';
 import {
   BadGatewayException,
+  BadRequestException,
   Injectable,
   Logger,
   NotFoundException,
@@ -58,18 +59,14 @@ export class AppService {
       throw new NotFoundException('User does not exist with the provided ID');
     }
 
-    const userProfile = await this.data.userProfile.findUnique({
-      where: { id: user.profile.id },
-    });
-
-    if (!userProfile) {
+    if (!user.profile) {
       return await this.data.userProfile.create({
         data: { userId, ...dto },
       });
     }
 
     return await this.data.userProfile.update({
-      where: { id: userProfile.id },
+      where: { id: user.profile.id },
       data: { ...dto },
     });
   }
@@ -86,17 +83,14 @@ export class AppService {
       throw new NotFoundException('User does not exist with the provided ID');
     }
     const { key } = await this.uploadFile(photo);
-    const userProfilePhoto = await this.data.userProfilePhoto.findUnique({
-      where: { id: user.photo.id },
-    });
-    if (!userProfilePhoto) {
+    if (!user.photo) {
       return await this.data.userProfilePhoto.create({
         data: { userId, url: key },
       });
     }
     await Storage.disk('docs').delete(key);
     return await this.data.userProfilePhoto.update({
-      where: { id: userProfilePhoto.id },
+      where: { id: user.photo.id },
       data: { url: key },
     });
   }
@@ -143,13 +137,32 @@ export class AppService {
   }
 
   async requestJobCard(dto: RequestJobCardDTO): Promise<RequestedJobCard> {
+    const jobCard = await this.data.userJobCard.findUnique({
+      where: { id: dto.jobCardId },
+      include: { user: { include: { photo: true, profile: true } } },
+    });
+
+    if (!jobCard.user.photo) {
+      throw new BadRequestException('User profile photo is required.');
+    }
+
+    if (!jobCard.user.profile) {
+      throw new BadRequestException('User Profile address is required.');
+    }
+
     return await this.data.requestedJobCard.create({
       data: { ...dto },
     });
   }
 
   async getRequestedJobCards(): Promise<RequestedJobCard[]> {
-    return await this.data.requestedJobCard.findMany();
+    return await this.data.requestedJobCard.findMany({
+      include: {
+        jobCard: {
+          include: { user: { include: { photo: true, profile: true } } },
+        },
+      },
+    });
   }
 
   @Cron(CronExpression.EVERY_HOUR)

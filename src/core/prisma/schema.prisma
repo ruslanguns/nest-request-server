@@ -21,12 +21,12 @@ model User {
   email     String
   phone     String
   learnerId String
-  jobCards  UserJobCards[]
+  jobCards  UserJobCard[]
   profile   UserProfile?
   photo     UserProfilePhoto?
 }
 
-model UserJobCards {
+model UserJobCard {
   id        String             @id @default(cuid())
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
@@ -59,9 +59,9 @@ model UserProfilePhoto {
 }
 
 model RequestedJobCard {
-  id        String       @id @default(cuid())
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  jobCard   UserJobCards @relation(fields: [jobCardId], references: [id])
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  jobCard   UserJobCard @relation(fields: [jobCardId], references: [id])
   jobCardId String
 }
