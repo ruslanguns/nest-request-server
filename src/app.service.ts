@@ -39,7 +39,11 @@ export class AppService {
     if (!count) {
       throw new NotFoundException('Still no available data, please seeed it');
     }
-    return await this.data.user.findFirst({ take: 1, skip: randomNumber });
+    return await this.data.user.findFirst({
+      take: 1,
+      skip: randomNumber,
+      include: { jobCards: true, profile: true, photo: true },
+    });
   }
 
   async addUserAddress({
