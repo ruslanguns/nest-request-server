@@ -18,7 +18,7 @@ import { RequestJobCardDTO } from './dto/request-new-card.dto';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get('user/random')
   async getRandomUser() {
@@ -37,6 +37,11 @@ export class AppController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return await this.appService.updateUserProfilePhoto(userId, file);
+  }
+
+  @Get('user/:userId')
+  async getUserById(@Param('userId') userId: string) {
+    return await this.appService.getUserById(userId);
   }
 
   @Post('file/upload')

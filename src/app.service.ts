@@ -21,7 +21,7 @@ import { AwsFileResponse } from './interfaces/aws-file-response.interface';
 export class AppService {
   logger = new Logger();
 
-  constructor(private readonly data: PrismaService) {}
+  constructor(private readonly data: PrismaService) { }
 
   async getRandomUser(): Promise<User> {
     const count = await this.data.user.count();
@@ -34,6 +34,19 @@ export class AppService {
       skip: randomNumber,
       include: { jobCards: true, profile: true, photo: true },
     });
+  }
+
+  async getUserById(userId: string): Promise<User> {
+    const user = await this.data.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: { jobCards: true, profile: true, photo: true },
+    });
+    if (!user) {
+      throw new NotFoundException('User does not exist!');
+    }
+    return user;
   }
 
   async addUserAddress({ userId, ...dto }: CreateUserAddressDTO): Promise<UserProfile> {
@@ -123,19 +136,23 @@ export class AppService {
   async requestJobCard(dto: RequestJobCardDTO): Promise<RequestedJobCard> {
     const jobCard = await this.data.userJobCard.findUnique({
       where: { id: dto.jobCardId },
-      include: { user: { include: { photo: true, profile: true } } },
+      include: { user: { include: { photo: true, profile: true } } }, // FIXME: does not get the nested data
     });
-
-    if (!jobCard.user.photo) {
-      throw new BadRequestException('User profile photo is required.');
-    }
 
     if (!jobCard.user.profile) {
       throw new BadRequestException('User Profile address is required.');
     }
+    if (!jobCard.user.photo) {
+      throw new BadRequestException('User profile photo is required.');
+    }
 
     return await this.data.requestedJobCard.create({
       data: { ...dto },
+      include: {
+        jobCard: {
+          include: { user: { include: { photo: true, profile: true } } },
+        },
+      },
     });
   }
 
@@ -152,9 +169,7 @@ export class AppService {
   @Cron(CronExpression.EVERY_HOUR)
   deleteTemporaryFiles(): void {
     const directory = join(process.cwd(), 'tmp');
-    if (existsSync(directory)) {
-      this.logger.verbose('Removing temporary files!');
-      rmdirSync(directory, { recursive: true });
-    }
+    this.logger.verbose('Removing temporary files!');
+    rmdirSync(directory, { recursive: true });
   }
 }
